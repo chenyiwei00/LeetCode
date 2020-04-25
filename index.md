@@ -14,3 +14,7 @@
 **排序算法总结**
 
 [选择排序&快排&堆排&归并排序](https://github.com/chenyiwei00/LeetCode/blob/master/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%26%E5%BF%AB%E6%8E%92%26%E5%A0%86%E6%8E%92%26%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F.md)
+
+**其它**
+
+[最大数](https://github.com/chenyiwei00/LeetCode/blob/master/%E6%9C%80%E5%A4%A7%E6%95%B0.md)

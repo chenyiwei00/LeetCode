@@ -21,6 +21,10 @@
 
 [寻找峰值（二分法）](https://github.com/chenyiwei00/LeetCode/blob/master/%E5%AF%BB%E6%89%BE%E5%B3%B0%E5%80%BC%EF%BC%88%E4%BA%8C%E5%88%86%E6%B3%95%EF%BC%89.md)
 
+**树**
+
+[二叉树的前序&中序&后序遍历](https://github.com/chenyiwei00/LeetCode/blob/master/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%89%8D%E5%BA%8F%26%E4%B8%AD%E5%BA%8F%26%E5%90%8E%E5%BA%8F%E9%81%8D%E5%8E%86.md)
+
 **其它**
 
 [最大数](https://github.com/chenyiwei00/LeetCode/blob/master/%E6%9C%80%E5%A4%A7%E6%95%B0.md)

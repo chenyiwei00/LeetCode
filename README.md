@@ -1,0 +1,158 @@
+# 887.鸡蛋掉落
+
+题目：
+
+```
+你将获得 K 个鸡蛋，并可以使用一栋从 1 到 N  共有 N 层楼的建筑。
+每个蛋的功能都是一样的，如果一个蛋碎了，你就不能再把它掉下去。
+你知道存在楼层 F ，满足 0 <= F <= N 任何从高于 F 的楼层落下的鸡蛋都会碎，从 F 楼层或比它低的楼层落下的鸡蛋都不会破。
+每次移动，你可以取一个鸡蛋（如果你有完整的鸡蛋）并把它从任一楼层 X 扔下（满足 1 <= X <= N）。
+你的目标是确切地知道 F 的值是多少。
+无论 F 的初始值如何，你确定 F 的值的最小移动次数是多少？
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/super-egg-drop
+```
+
+[点击查看视频讲解](https://zhuanlan.zhihu.com/p/115292614)
+
+纠正：视频里的状态转移方程漏写了一个+1，意思就是不管鸡蛋有没有摔碎，不管我们是往上走还是往下走，当前都已经扔过一次了，所以次数+1。
+
+代码（优化前）：
+
+```java
+class Solution {
+    public int superEggDrop(int K, int N) {
+        //dp存的是拥有i个鸡蛋j层楼情况下找到F所需的最小移动次数
+        int[][] dp = new int[K+1][N+1];
+        //只有一个鸡蛋时，最坏需要移动（当前拥有的楼层数）次
+        for(int i=0;i<=N;i++){
+            dp[1][i] = i;
+        }
+        //从两个鸡蛋的情况开始算
+        for(int i=2;i<=K;i++){
+            //在拥有i个鸡蛋j个楼层的情况下，计算从h层扔鸡蛋去找F层所需的移动次数
+            for(int j=1;j<=N;j++){
+                int ans = Integer.MAX_VALUE;
+                for(int h=1;h<=j;h++){
+                    int A = dp[i-1][h-1];
+                    int B = dp[i][j-h];
+                    //ans为h从1取到j层楼的所有情况里的最小移动次数
+                    ans = Math.min(ans,Math.max(A,B)+1);
+                }
+                dp[i][j] = ans;
+            }
+        }
+        return dp[K][N];
+    }
+}
+```
+
+这是结合我视频里的思路写出来的代码，比较便于理解。但是由于h一次次地从1取到当前拥有的楼层数，然后才能比较出最小值，这中间做了很多不必要的工作，所以还需要进行优化。
+
+回头看一下这个状态转移方程：
+$$
+max(dp(K-1,X-1),dp(K,N-X))
+$$
+可以发现：
+
+当X增大时，dp(K-1,X-1)是随之增大的。这也很好理解，楼层越多，想找到F就需要更多的次数。
+
+而当X增大时，dp(K,N-X)是随之减小的。和上条是一样的道理，X越大，N-X就越小，即楼层越少，那么找到F所需的次数就更少。
+
+而max(dp(K-1,X-1),dp(K,N-X))，取的是两者中的较大数。画个图理解一下（当然真实数据并不是图片所展示的这样，这个图只是为了便于理解）：
+
+<img src="/Users/cyw/Documents/学习/leetcode/图片/IMG_0513.jpg" alt="IMG_0513" style="zoom:30%;" />
+$$
+红色折线即为max(dp(K-1,X-1),dp(K,N-X))的图像
+$$
+所以max(dp(K-1,X-1),dp(K,N-X))是先递减后递增的，它的最小值即为我们要找的最小移动次数。
+
+也就是说，我们不必每次都让h从1开始遍历完所有的楼层，只要找到一个X，使得
+
+$$
+max(dp(K-1,X-1),dp(K,N-X))<max(dp(K-1,(X+1)-1),dp(K,N-(X+1)))
+$$
+成立，那么这个X就是让max取到最小值时的层数。
+
+代码（优化后）：
+
+```java
+class Solution {
+    public int superEggDrop(int K, int N) {
+        //dp存的是拥有i个鸡蛋j层楼情况下找到F所需的最小移动次数
+        int[][] dp = new int[K+1][N+1];
+        //只有一个鸡蛋时，最坏需要移动（当前拥有的楼层数）次
+        for(int i=0;i<=N;i++){
+            dp[1][i] = i;
+        }
+        //从两个鸡蛋的情况开始算
+        for(int i=2;i<=K;i++){
+            int x=1;
+            for(int j=1;j<=N;j++){
+                //当取x层比取X+1层的结果要大时，x++（再往上找）
+                while(x<j && Math.max(dp[i-1][x-1],dp[i][j-x])>Math.max(dp[i-1][x],dp[i][j-x-1]))
+                    x++;
+                dp[i][j] = Math.max(dp[i-1][x-1],dp[i][j-x])+1;
+            }
+        }
+        return dp[K][N];
+    }
+}
+```
+
+总结：动态规划就是一个自底向上计算的过程，保存每个前面的值，便于后面去计算。像这道题，我们先算好K=1的情况，便于给K=2的情况用。接下来，一步步根据前面的值算出dp[2] [1]，dp[2] [2]……就这样一直自底向上计算出dp[K] [N]。
+
+
+
+补充：经评论区大神指点，发现还可以做另一种优化。
+
+像上面分析的那样，dp(K-1,X-1)是递增函数，dp(K,N-X)是递减函数，max在两者相交时取到最小值。如下图所示。
+
+<img src="/Users/cyw/Documents/学习/leetcode/图片/jiaodian.jpg" alt="jiaodian" style="zoom:30%;" />
+
+
+那么我们令low=1，high=N（当前总楼层数），index=(low+high)/2，根据以上图像，我们会发现：
+
+如果dp(K-1,index-1)>dp(K,N-index)，说明当前index位于交点右侧，可以缩小查找区间至[low,index]，否则说明index位于交点的左侧，缩小查找区间为[index,high]。
+
+根据这个规律，就可以通过二分法去查找到这个交点了！
+
+代码（优化二）：
+
+```java
+class Solution {
+    public int superEggDrop(int K, int N) {
+        //dp存的是拥有i个鸡蛋j层楼情况下找到F所需的最小移动次数
+        int[][] dp = new int[K+1][N+1];
+        //只有一个鸡蛋时，最坏需要移动（当前拥有的楼层数）次
+        for(int i=0;i<=N;i++){
+            dp[1][i] = i;
+        }
+        //从两个鸡蛋的情况开始算
+        for(int i=2;i<=K;i++){
+            for(int j=1;j<=N;j++){
+                //通过二分法去查找能取到最小移动次数的层数
+                int low=1,high=j;
+                while(low+1<high){
+                    int index = (low+high)/2;
+                    int A = dp[i-1][index-1];
+                    int B = dp[i][j-index];
+                    if(A>B){
+                        high = index;
+                    }else if(A<B){
+                        low = index;
+                    }else{
+                        low = high = index;
+                    }
+                }
+                //dp[i][j]=min(选择low层时的移动次数,选择high层时的移动次数)
+                dp[i][j] = Math.min(Math.max(dp[i-1][low-1],dp[i][j-low]),Math.max(dp[i-1][high-1],dp[i][j-high]))+1;
+            }
+        }
+        return dp[K][N];
+    }
+}
+```
+
+注意：这个交点可能并不是整数（无法取到这个楼层），所以最后要用low和high分别代入计算，再取最小值。

@@ -1,0 +1,146 @@
+题目（[前往原题]（https://leetcode-cn.com/problems/sliding-window-maximum/））：
+```markdown
+给定一个数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
+返回滑动窗口中的最大值。
+
+进阶：
+你能在线性时间复杂度内解决此题吗？
+```
+
+**解法一（暴力法）**
+
+思路：如果题目对时间复杂度没有要求，可以用暴力解法。声明一个变量，令它等于滑动窗口内的第一个数，然后遍历取到滑动窗口内的每一个数，比较出最大值，将最大值存入结果。再将滑动窗口后移一位，重复上述过程。
+
+代码：
+
+```
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        //若nums为空或k=0,返回空集
+        if(nums.length*k==0){
+            return new int[0];
+        }
+        //若k=1,nums本身就是滑动窗口最大值的集合
+        if(k==1){
+            return nums;
+        }
+        int[] res = new int[nums.length-k+1];
+        for(int i=0;i<nums.length-k+1;i++){
+            //取到滑动窗口内的第一个数
+            int max = nums[i];
+            //遍历滑动窗口，比较出最大值
+            for(int j=0;j<k;j++){
+                if(max < nums[i+j]){
+                    max = nums[i+j];
+                }
+            }
+            //将最大值存入数组
+            res[i] = max;
+        }
+        return res;
+    }
+}
+```
+
+总结：暴力法思路清晰，实现简单，就是时间复杂度较高，为O(Nk)。
+
+![img](https://pic1.zhimg.com/v2-e7d78ab8a445f8354d77e7d799600e44_b.png)
+
+**解法二（双向队列）：**
+
+思路：若要在线性时间复杂度内解决问题，即时间复杂度=O(N)，则不应重复比较在滑动窗口内的数。
+
+我们可以声明一个双向队列deq，先存入nums[0]，然后令i=1，从nums[1]开始遍历判断：
+
+①若当前元素nums[i]大于双向队列的最后一个元素deq.getLast()，那么移除队列中的最后一个元素（需要用while循环一直判断到nums[i]<=deq.getLast()为止，因为比nums[i]小的数没必要存在队列里），存入nums[i]，否则，直接存入nums[i]。这种做法可以保证双向队列的头部一直是当前最大数。
+
+②若头部元素不在滑动窗口内，则移除该元素。
+
+但这也带来了一个问题，我们怎么判断该元素不在滑动窗口内了呢？
+
+解决办法：双向队列不存元素，存元素索引。
+
+代码：
+
+```
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if(nums.length*k==0){
+            return new int[0];
+        }
+        if(k==1){
+            return nums;
+        }
+        //声明一个双向队列,用来存索引
+        ArrayDeque<Integer> deq = new ArrayDeque<Integer>();
+        int[] res = new int[nums.length-k+1];
+        //先存入第一个元素的索引
+        deq.addLast(0);
+        for(int i=1;i<nums.length;i++){
+            //若deq头部元素不在滑动窗口内，移除该元素
+            if(!deq.isEmpty() && deq.getFirst()==i-k){
+                deq.removeFirst();
+            }
+            //若nums[i]大于nums[deq中最后一个索引]，删除该索引（保证deq中的第一个值是滑动窗口内最大值的索引）
+            while(!deq.isEmpty() && nums[i]>nums[deq.getLast()]){
+                deq.removeLast();
+            }
+            deq.addLast(i);
+            //第一个滑动窗口处理完后，便可以进行赋值操作
+            if(i>k-2){
+                res[i-k+1] = nums[deq.getFirst()];
+            }
+        }
+        return res;
+    }
+}
+```
+
+总结：虽然在for循环里还有一个while，但这个算法其实只对每个元素进行了两次操作，时间复杂度为O(N)。
+
+**解法三（动态规划）**
+
+思路：这是在leetcode官方解法看到的一种思路，很巧妙，记录学习一下。
+
+在草稿纸上写了解题思路，比较直观（就是字丑了点0_0）：
+
+![img](https://pic2.zhimg.com/v2-9bbab730e63097d2fd402273a2e34f8d_b.jpeg)
+
+代码：
+
+```
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length;
+        if(n*k==0){
+            return new int[0];
+        }
+        if(k==1){
+            return nums;
+        }
+        int[] left = new int[n];
+        int[] right = new int[n];
+        int[] res = new int[n-k+1];
+        for(int i=0;i<n;i++){
+            //以块为单位比较元素
+            if(i%k==0){
+                left[i] = nums[i];
+            }else{
+                left[i] = Math.max(nums[i],left[i-1]);
+            }
+            int j=n-i-1;
+            if((j+1)%k==0 || j==n-1){
+                right[j] = nums[j];
+            }else{
+                right[j] = Math.max(nums[j],right[j+1]);
+            }
+        }
+        for(int i=0;i<n-k+1;i++){
+            res[i] = Math.max(left[k+i-1],right[i]);
+        }
+        return res;
+    }
+}
+```
+
+总结：将元素以滑动窗口的大小划分为若干块，通过以块为单位排序的左右数组来存储滑动窗口左右部分的最大值，最后比较左右部分的最大值，取出最大的那个即可。

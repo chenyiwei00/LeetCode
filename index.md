@@ -4,6 +4,7 @@
 **动态规划**
 
 [鸡蛋掉落](https://github.com/chenyiwei00/LeetCode/blob/master/887%E9%B8%A1%E8%9B%8B%E6%8E%89%E8%90%BD.md)
+[滑动窗口最大值](https://github.com/chenyiwei00/LeetCode/blob/master/%08%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC.md)
 
 **数据结构**
 

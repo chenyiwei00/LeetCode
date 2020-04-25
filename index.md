@@ -30,3 +30,5 @@
 [最大数](https://github.com/chenyiwei00/LeetCode/blob/master/%E6%9C%80%E5%A4%A7%E6%95%B0.md)
 
 [重复的DNA序列（求子串问题）](https://github.com/chenyiwei00/LeetCode/blob/master/%E9%87%8D%E5%A4%8D%E7%9A%84DNA%E5%BA%8F%E5%88%97%EF%BC%88%E6%B1%82%E5%AD%90%E4%B8%B2%E9%97%AE%E9%A2%98%EF%BC%89.md)
+
+[直线上最多的点数](https://github.com/chenyiwei00/LeetCode/blob/master/%E7%9B%B4%E7%BA%BF%E4%B8%8A%E6%9C%80%E5%A4%9A%E7%9A%84%E7%82%B9%E6%95%B0.md)

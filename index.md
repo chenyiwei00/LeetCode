@@ -1,37 +1,43 @@
-## Welcome to GitHub Pages
-
-You can use the [editor on GitHub](https://github.com/chenyiwei00/LeetCode/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### 分享我的LeetCode刷题记录^__^
+我会根据不同的解法对题目进行分类，知乎专栏也会同步更新~[我的知乎专栏](https://zhuanlan.zhihu.com/c_1187843464115523584)
 
 ```markdown
-Syntax highlighted code block
+import java.util.Scanner;
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+public class Main {
+    private static int backtrack(Integer[][] dp, int[] nums, int n, int B){
+        //若dp[n][B]已经算过，则返回
+        if(dp[n][B] != null)
+            return dp[n][B];
+        int min = Integer.MAX_VALUE;
+        for(int i=1;i<B+1;i++){
+            if(B%i != 0)
+                continue;
+            //找出B的一对因子i和j
+            int j = B/i;
+            //求出用B的多对因子求代价的最小值
+            min = Math.min(min,backtrack(dp,nums,n-1,i)+Math.abs(nums[n-1]-j));
+        }
+        return dp[n][B] = min;
+    }
+    public static void main(String[] args){
+       Scanner scan  = new Scanner(System.in);
+       int n = scan.nextInt();
+       int B = scan.nextInt();
+       int[] nums = new int[n];
+       for(int i=0;i<n;i++)
+           nums[i] = scan.nextInt();
+       Integer[][] dp = new Integer[n+1][B+1];
+       //为二维数组第一行与第一列赋值（其实是第二行第二列，这里为了便于理解不去管dp[0][j]和dp[i][0]的情况）
+       for(int i=1;i<B+1;i++)
+           dp[1][i] = Math.abs(i-nums[0]);
+       int temp = 0;
+       //第一列相应位置的值=令前i个数都变为1的代价之和
+       for(int i=1;i<n+1;i++){
+           temp += Math.abs(nums[i-1]-1);
+           dp[i][1] = temp;
+       }
+       System.out.println(backtrack(dp,nums,n,B));
+    }
+}
 ```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/chenyiwei00/LeetCode/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.

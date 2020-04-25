@@ -11,9 +11,11 @@
 
 [LRU & LFU](https://github.com/chenyiwei00/LeetCode/blob/master/LRU%20%26%20LFU.md)
 
-**排序算法总结**
+**排序算法**
 
-[选择排序&快排&堆排&归并排序](https://github.com/chenyiwei00/LeetCode/blob/master/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%26%E5%BF%AB%E6%8E%92%26%E5%A0%86%E6%8E%92%26%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F.md)
+[选择排序&快排&堆排&归并排序总结](https://github.com/chenyiwei00/LeetCode/blob/master/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%26%E5%BF%AB%E6%8E%92%26%E5%A0%86%E6%8E%92%26%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F.md)
+
+[寻找峰值（二分法）](https://github.com/chenyiwei00/LeetCode/blob/master/%E5%AF%BB%E6%89%BE%E5%B3%B0%E5%80%BC%EF%BC%88%E4%BA%8C%E5%88%86%E6%B3%95%EF%BC%89.md)
 
 **其它**
 
